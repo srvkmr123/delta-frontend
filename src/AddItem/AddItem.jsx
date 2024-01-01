@@ -3,17 +3,22 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ItemSchema } from '../validateItem';
 import axios from 'axios'
+import { useState } from 'react';
 
 function AddItem({setIsItemAdded}) {
- 
+
+    const [isAlert,setIsAlert]=useState(false)
+    
 const handleSubmit=async(values, { setSubmitting,resetForm })=>{
    
    try{
     const res=await axios.post(`https://delta-backend.vercel.app/add-item`,values)
     console.log(res);
     setSubmitting(false)
+    setIsAlert(true)
     resetForm()
     setIsItemAdded(prevVal=>!prevVal)
+    setTimeout(()=>setIsAlert(false),2000)
    }
    catch(ex){
     console.log(ex);
@@ -22,6 +27,9 @@ const handleSubmit=async(values, { setSubmitting,resetForm })=>{
     
   return (
     <div className='card container'>
+    {isAlert?<div className="item-alert alert alert-success fixed-top " role="alert">
+  Item added successfully !!
+</div>:null}
         <h2 className='text-center'>Add Item</h2>
       <Formik
             initialValues={{ title: '', description: '' }}
